@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inbox Rescue — a free 10-point email deliverability check for Shopify stores</title>
+<meta name="description" content="When open rates collapse, the cause is usually your sending setup, not your copy. A human checks all ten points and tells you what to fix. Free, within 24 hours.">
+<!-- Pilot page: keep out of search results until the brand/domain is confirmed. Remove when we move to the SEO phase. -->
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root{
+    --paper:#f7f5ef;
+    --paper-2:#efece2;
+    --ink:#16150f;
+    --ink-2:#4a4940;
+    --muted:#77756a;
+    --rule:#d9d4c6;
+    --rule-strong:#b9b3a1;
+    --accent:#7a2e1d;
+    --accent-ink:#5c2216;
+    --ok:#1f5c3d;
+    --radius:2px;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:hover{color:var(--accent-ink)}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+  .rule{border:0;border-top:1px solid var(--rule);margin:0}
+
+  /* ---- top bar ---- */
+  header.top{
+    position:sticky;top:0;z-index:20;background:rgba(247,245,239,.92);
+    backdrop-filter:saturate(1.2) blur(8px);border-bottom:1px solid var(--rule);
+  }
+  .top-inner{display:flex;align-items:center;gap:14px;height:60px}
+  .wordmark{
+    font-family:var(--serif);font-size:19px;letter-spacing:.02em;font-weight:600;
+    text-decoration:none;color:var(--ink);white-space:nowrap;
+  }
+  .wordmark span{color:var(--accent)}
+  .pill{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    border:1px solid var(--rule-strong);color:var(--muted);padding:2px 7px;border-radius:999px;
+  }
+  .top-nav{margin-left:auto;display:flex;align-items:center;gap:22px}
+  .top-nav a{font-size:14.5px;color:var(--ink-2);text-decoration:none}
+  .top-nav a:hover{color:var(--accent)}
+  @media(max-width:720px){.top-nav a:not(.cta-mini){display:none}}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font:inherit;font-size:15px;font-weight:600;line-height:1.2;
+    padding:13px 20px;border-radius:var(--radius);border:1px solid var(--accent);
+    background:var(--accent);color:#fff;cursor:pointer;text-decoration:none;
+    transition:background .15s ease,border-color .15s ease,transform .15s ease;
+  }
+  .btn:hover{background:var(--accent-ink);border-color:var(--accent-ink);color:#fff}
+  .btn:active{transform:translateY(1px)}
+  .btn.small{padding:9px 14px;font-size:14px}
+  .cta-mini{border-color:var(--ink);background:transparent;color:var(--ink)}
+  .cta-mini:hover{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+  /* ---- hero ---- */
+  .hero{padding:64px 0 56px}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);gap:56px;align-items:start}
+  .eyebrow{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 20px;
+  }
+  h1{
+    font-family:var(--serif);font-weight:600;letter-spacing:-.01em;
+    font-size:clamp(34px,4.4vw,54px);line-height:1.08;margin:0 0 22px;
+  }
+  h1 em{font-style:italic;color:var(--accent)}
+  .lede{font-size:17.5px;line-height:1.62;color:var(--ink-2);margin:0 0 26px;max-width:44ch}
+  .lede strong{color:var(--ink);font-weight:600}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:26px;padding-top:20px;border-top:1px solid var(--rule)}
+  .hero-meta div{font-size:13.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none}
+
+  /* ---- form card ---- */
+  .card{
+    background:#fffdf8;border:1px solid var(--rule-strong);border-radius:var(--radius);
+    padding:26px;box-shadow:0 1px 0 rgba(22,21,15,.04),0 18px 40px -32px rgba(22,21,15,.5);
+  }
+  .card h2{font-family:var(--serif);font-size:22px;margin:0 0 6px;font-weight:600}
+  .card .sub{font-size:13.5px;color:var(--muted);margin:0 0 20px}
+  .field{margin:0 0 14px}
+  .field label{display:block;font-size:12.5px;font-weight:600;letter-spacing:.02em;margin:0 0 6px;color:var(--ink-2)}
+  .field input,.field select{
+    width:100%;font:inherit;font-size:15px;color:var(--ink);
+    background:var(--paper);border:1px solid var(--rule-strong);border-radius:var(--radius);
+    padding:11px 12px;appearance:none;
+  }
+  .field select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+    background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px}
+  .field input:focus,.field select:focus{outline:2px solid rgba(122,46,29,.28);outline-offset:1px;border-color:var(--accent)}
+  .field .hint{font-size:11.5px;color:var(--muted);margin:5px 0 0}
+  form .btn{width:100%;margin-top:4px}
+  .fine{font-size:12px;color:var(--muted);margin:12px 0 0;line-height:1.5}
+  .form-status{display:none;font-size:14px;line-height:1.55;margin:12px 0 0;padding:10px 12px;border-radius:var(--radius)}
+  .form-status.ok{display:block;background:#eef3ee;border:1px solid #c9dbcd;color:#1d4b32}
+  .form-status.err{display:block;background:#f8eeea;border:1px solid #e3c9c0;color:#7a2e1d}
+  .sent{display:none}
+  .sent h2{margin-bottom:10px}
+  .sent p{font-size:14.5px;color:var(--ink-2);margin:0 0 10px}
+
+  /* ---- sections ---- */
+  section{padding:64px 0}
+  .sec-head{max-width:62ch;margin-bottom:34px}
+  .sec-label{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 12px;
+  }
+  h2.h2{font-family:var(--serif);font-size:clamp(26px,3vw,36px);line-height:1.16;margin:0 0 12px;font-weight:600;letter-spacing:-.005em}
+  .sec-head p{font-size:16px;color:var(--ink-2);margin:0}
+
+  .checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px;border-top:1px solid var(--rule)}
+  .check{display:grid;grid-template-columns:34px 1fr;gap:0 14px;padding:20px 0;border-bottom:1px solid var(--rule)}
+  .check .n{font-family:var(--mono);font-size:12px;color:var(--accent);padding-top:3px}
+  .check h3{font-size:15.5px;margin:0 0 5px;font-weight:650;letter-spacing:.01em}
+  .check p{margin:0;font-size:14px;line-height:1.55;color:var(--ink-2)}
+  @media(max-width:820px){.checks{grid-template-columns:1fr}}
+
+  .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+  @media(max-width:820px){.cols{grid-template-columns:1fr}}
+  .box{border-top:2px solid var(--ink);padding-top:16px}
+  .box h3{font-size:16px;margin:0 0 8px;font-weight:650}
+  .box p{margin:0;font-size:14.5px;color:var(--ink-2)}
+  .box ul{margin:8px 0 0;padding-left:18px;font-size:14.5px;color:var(--ink-2)}
+  .box li{margin:4px 0}
+
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;counter-reset:s}
+  @media(max-width:820px){.steps{grid-template-columns:1fr}}
+  .step{counter-increment:s;position:relative;padding-left:0}
+  .step:before{
+    content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:12px;color:var(--muted);
+    display:block;margin-bottom:10px;letter-spacing:.08em;
+  }
+  .step h3{font-size:16px;margin:0 0 6px;font-weight:650}
+  .step p{margin:0;font-size:14.5px;color:var(--ink-2)}
+
+  /* ---- pricing ---- */
+  .pricing{background:var(--paper-2);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:stretch}
+  @media(max-width:820px){.price-grid{grid-template-columns:1fr}}
+  .plan{background:#fffdf8;border:1px solid var(--rule-strong);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column}
+  .plan.feature{border-color:var(--ink);box-shadow:0 1px 0 var(--ink)}
+  .plan .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+  .plan .amount{font-family:var(--serif);font-size:40px;line-height:1;margin:0 0 4px;letter-spacing:-.01em}
+  .plan .amount small{font-family:var(--sans);font-size:13.5px;color:var(--muted);letter-spacing:0;margin-left:6px}
+  .plan .desc{font-size:14.5px;color:var(--ink-2);margin:14px 0 18px}
+  .plan ul{margin:0 0 22px;padding-left:18px;font-size:14px;color:var(--ink-2)}
+  .plan li{margin:6px 0}
+  .plan .btn{margin-top:auto}
+  .after{font-size:13.5px;color:var(--muted);margin:22px 0 0;text-align:center}
+
+  /* ---- faq ---- */
+  .faq{max-width:820px}
+  details.faq-item{border-bottom:1px solid var(--rule);padding:6px 0}
+  details.faq-item summary{
+    cursor:pointer;list-style:none;padding:16px 30px 16px 0;position:relative;
+    font-size:16.5px;font-weight:600;
+  }
+  details.faq-item summary::-webkit-details-marker{display:none}
+  details.faq-item summary:after{
+    content:"+";position:absolute;right:2px;top:12px;font-family:var(--mono);font-size:20px;
+    color:var(--accent);transition:transform .15s ease;
+  }
+  details.faq-item[open] summary:after{content:"–"}
+  details.faq-item p{margin:0 0 18px;font-size:15px;color:var(--ink-2);max-width:68ch}
+
+  /* ---- footer ---- */
+  footer{border-top:1px solid var(--rule);padding:44px 0 64px;font-size:13.5px;color:var(--muted)}
+  .foot-grid{display:flex;flex-wrap:wrap;gap:18px 40px;justify-content:space-between;align-items:flex-start}
+  .foot-grid p{margin:0 0 6px;max-width:52ch;line-height:1.6}
+  .foot-mono{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--muted)}
+
+  .skip{position:absolute;left:-9999px}
+  .skip:focus{left:16px;top:12px;position:fixed;z-index:99;background:var(--ink);color:var(--paper);padding:8px 12px;border-radius:2px}
+
+  /* ---- responsive: the hero is the only two-column block that must stack early ---- */
+  @media(max-width:900px){
+    .wrap{padding:0 18px}
+    .top-inner{height:56px;gap:10px}
+    .pill{display:none}
+    .top-nav{gap:12px}
+    .hero{padding:40px 0 36px}
+    .hero-grid{grid-template-columns:minmax(0,1fr);gap:30px}
+    .eyebrow{font-size:10.5px;line-height:1.5;margin-bottom:16px}
+    h1{font-size:clamp(30px,7.4vw,40px);margin-bottom:18px}
+    .lede{font-size:16.5px;max-width:none}
+    section{padding:48px 0}
+    .sec-head{margin-bottom:26px}
+  }
+  @media(max-width:520px){
+    .hero-meta{flex-direction:column;gap:7px}
+    .checks .check{grid-template-columns:28px 1fr;gap:0 10px}
+    .price-grid{gap:16px}
+    .plan{padding:22px}
+    footer{padding:36px 0 48px}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#check">Skip to the free check</a>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="wordmark" href="/">Inbox<span>·</span>Rescue</a>
+    <span class="pill">Pilot</span>
+    <nav class="top-nav" aria-label="Main">
+      <a href="#what">What we check</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a class="btn small cta-mini" href="#check">Free check</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">For Shopify &amp; DTC stores using Klaviyo, Omnisend, or Shopify Email</p>
+        <h1 id="hero-h">Your emails don't land. Your list is probably <em>not</em> the problem.</h1>
+        <p class="lede">When open rates fall from 15% to 0.1% overnight, the cause is usually SPF, DKIM, DMARC, a new sending domain, or a consent setting nobody touched. We run all ten checks <strong>by hand</strong> and send you exactly what to fix — free, within 24 hours.</p>
+        <div class="hero-meta">
+          <div><span class="dot" aria-hidden="true"></span>One human reply, not a bot score</div>
+          <div><span class="dot" aria-hidden="true"></span>No ESP pitch</div>
+          <div><span class="dot" aria-hidden="true"></span>No newsletter</div>
+        </div>
+      </div>
+
+      <div class="card" id="check">
+        <form id="lead-form" novalidate>
+          <h2>Free 10-point check</h2>
+          <p class="sub">Send your domain. We reply within 24 hours.</p>
+          <div class="field">
+            <label for="domain">Your store domain</label>
+            <input id="domain" name="domain" type="text" inputmode="url" autocomplete="url" placeholder="yourstore.com" required>
+          </div>
+          <div class="field">
+            <label for="email">Your email</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="you@yourstore.com" required>
+          </div>
+          <div class="field">
+            <label for="symptom">What changed recently?</label>
+            <select id="symptom" name="symptom">
+              <option value="not-sure">Not sure — just look at everything</option>
+              <option value="open-rate">Open rates dropped</option>
+              <option value="no-delivery">Nothing gets delivered at all</option>
+              <option value="new-domain">We changed domains or switched ESP</option>
+              <option value="bounces">Bounces or spam complaints</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+          <button class="btn" type="submit" id="submit-btn">Get the free check</button>
+          <p class="fine">We use your domain and email only to run the check and reply. Ask us to delete it and we will.</p>
+          <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+        </form>
+
+        <div class="sent" id="sent">
+          <h2>Check received.</h2>
+          <p>You'll get a human reply within 24 hours, from a real address. If it's easier, reply to that email with a screenshot of your ESP dashboard.</p>
+          <p class="fine">Nothing arrived? Check spam — yes, we know.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ WHAT WE CHECK ============ -->
+  <section id="what" aria-labelledby="what-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label">The ten checks</p>
+        <h2 class="h2" id="what-h">Everything between "send" and "inbox".</h2>
+        <p class="sec-head" style="max-width:62ch">A deliverability consultant runs most of these by hand. So do we — with your actual domain and your actual ESP setup, not a generic score.</p>
+      </div>
+      <p style="font-size:15px;color:var(--ink-2);max-width:68ch;margin:0 0 8px">
+        <strong style="color:var(--ink)">Plus a sender inventory:</strong> every platform that sends as your domain, which one was added or changed last, and when the numbers started moving. Most tools check whether a record exists. They can't tell you that a second platform quietly started sending in March.
+      </p>
+      <div class="checks">
+        <div class="check"><div class="n">01</div><div><h3>SPF</h3><p>Is your authorization record complete, under the ten-lookup limit, and free of conflicting includes?</p></div></div>
+        <div class="check"><div class="n">02</div><div><h3>DKIM</h3><p>Is the selector your ESP handed you actually published, and aligned with the From domain your customers see?</p></div></div>
+        <div class="check"><div class="n">03</div><div><h3>DMARC</h3><p>Policy, alignment, and whether reporting is quietly failing your own subdomains.</p></div></div>
+        <div class="check"><div class="n">04</div><div><h3>Sending domain</h3><p>Verified inside the ESP? Shared IP, dedicated IP, or stuck mid-warmup? And which one is actually sending.</p></div></div>
+        <div class="check"><div class="n">05</div><div><h3>List hygiene</h3><p>How many bot, role, and never-engaged profiles are inflating your audience — and your bill.</p></div></div>
+        <div class="check"><div class="n">06</div><div><h3>Complaints &amp; bounces</h3><p>The two numbers mailbox providers care about, read from your own dashboard.</p></div></div>
+        <div class="check"><div class="n">07</div><div><h3>Reputation</h3><p>Blocklist status and domain reputation across Google, Outlook, and Yahoo.</p></div></div>
+        <div class="check"><div class="n">08</div><div><h3>Content &amp; tracking domain</h3><p>Spam score, image-to-text ratio, and link domains that don't match the domain that sent the mail.</p></div></div>
+        <div class="check"><div class="n">09</div><div><h3>Volume pattern</h3><p>Imports, sudden spikes, and the shape of your last 30 days — the story your ESP won't tell you.</p></div></div>
+        <div class="check"><div class="n">10</div><div><h3>Consent &amp; suppression</h3><p>The setting that silently stops sends: Shopify marketing consent, double opt-in, and unsubscribe sync.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHO ============ -->
+  <section aria-labelledby="who-h" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label">Who this is for</p>
+        <h2 class="h2" id="who-h">Stores that already pay for email.</h2>
+        <p>If you're still choosing an ESP, this won't help you yet.</p>
+      </div>
+      <div class="cols">
+        <div class="box">
+          <h3>Shopify &amp; DTC stores</h3>
+          <p>5,000+ subscribers, running Klaviyo, Omnisend, or Shopify Email — and open rates that no longer make sense.</p>
+        </div>
+        <div class="box">
+          <h3>Agencies</h3>
+          <p>You manage deliverability for ecommerce clients and need a second pair of eyes before you promise an inbox placement.</p>
+        </div>
+        <div class="box">
+          <h3>Anyone who paid and got nothing</h3>
+          <p>An email plan charged in full, a campaign that never arrived, and a support team that can't explain why.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ HOW ============ -->
+  <section id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label">How it works</p>
+        <h2 class="h2" id="how-h">Three steps, no accounts to connect.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <h3>Send your domain</h3>
+          <p>Thirty seconds. No Shopify admin access, no OAuth, no app install.</p>
+        </div>
+        <div class="step">
+          <h3>We run the ten checks</h3>
+          <p>By hand, within 24 hours. You get a written verdict: what's broken, what's fine, what to fix first.</p>
+        </div>
+        <div class="step">
+          <h3>Fix it, or book the rescue</h3>
+          <p>The free check is often enough. If you want the exact DNS records and a 30-day recovery plan, that's the $199 report.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section class="pricing" id="pricing" aria-labelledby="pricing-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="sec-label">Pricing</p>
+        <h2 class="h2" id="pricing-h">Start free. Pay only if you need the plan.</h2>
+        <p>No per-contact billing. No per-order billing. That's the model that got you here.</p>
+      </div>
+      <div class="price-grid">
+        <div class="plan">
+          <p class="tag">Diagnosis</p>
+          <p class="amount">Free</p>
+          <p class="desc">A human reads your DNS, your ESP configuration, and your recent campaign numbers.</p>
+          <ul>
+            <li>Sender inventory: every platform sending as your domain</li>
+            <li>All ten checks, run by hand</li>
+            <li>Written verdict: broken, fine, fix-first</li>
+            <li>One reply within 24 hours</li>
+          </ul>
+          <p class="fine" style="margin:0 0 18px">No app install, no OAuth, no login. If the check finds nothing, that's a valid answer.</p>
+          <a class="btn" href="#check">Get the free check</a>
+        </div>
+        <div class="plan feature">
+          <p class="tag">Rescue report · one time</p>
+          <p class="amount">$199<small>once</small></p>
+          <p class="desc">Everything in the free check, turned into a plan you or your developer can execute.</p>
+          <ul>
+            <li>Sender inventory, with the owner of each sending source</li>
+            <li>Exact DNS records to publish</li>
+            <li>Step-by-step ESP settings, with screenshots of where they live</li>
+            <li>A timeline of when the numbers started moving</li>
+            <li>30-day recovery and warmup plan</li>
+            <li>One 45-minute call and 30 days of follow-up questions</li>
+          </ul>
+          <p class="fine" style="margin:0 0 18px">Fixed scope: up to 2 sending sources and 90 days of data. Delivered in 3 business days. 24-hour rush: +$99.</p>
+          <a class="btn" href="#check">Start with the free check</a>
+        </div>
+      </div>
+      <p class="after">After the rescue: optional <strong>$49/mo</strong> watch — authentication, reputation, and placement checked monthly. Cancel any time.<br>If we can't find anything actionable, you don't pay.<br>We don't promise inbox placement. Nobody honestly can. We do promise a fix list you can verify.</p>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq" aria-labelledby="faq-h">
+    <div class="wrap faq">
+      <div class="sec-head">
+        <p class="sec-label">Questions</p>
+        <h2 class="h2" id="faq-h">The short answers.</h2>
+      </div>
+      <details class="faq-item">
+        <summary>Do you need Shopify admin access?</summary>
+        <p>No. Your domain plus a screenshot of your ESP dashboard is enough. If something is genuinely invisible from outside, we'll ask for a specific number — never for account access.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Are you going to sell me an ESP?</summary>
+        <p>No. We don't resell email platforms, and we don't take referral fees. If the honest answer is "switch providers", we'll say so — but most of the time it isn't.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Why is the report $199?</summary>
+        <p>Because it's fixed scope, not an open retainer: two sending sources, 90 days of data, one PDF your developer can execute, one 45-minute call, and 30 days of follow-up. Specialist audits start around $150; agency ones run to $1,500. This is the fixed-scope version of that work — and if the free check says you don't need it, we'll tell you that instead.</p>
+      </details>
+      <details class="faq-item">
+        <summary>My domain is on a blocklist. Now what?</summary>
+        <p>That's check seven. Each blocklist has its own removal path, and some are automatic once the underlying problem is fixed. The report names the list, the evidence, and the removal route.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What do you do with my data?</summary>
+        <p>We store the domain and email you submit, only to run the check and reply. No newsletter, no resale, no enrichment. Ask us to delete it and we will, same day.</p>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <p><strong style="color:var(--ink)">Inbox Rescue</strong> — a pilot service for the first ten stores. One engineer runs the checks, no agency in between.</p>
+      <p>Independent of every ESP. We don't resell email platforms and we don't take referral fees.</p>
+    </div>
+    <div>
+      <p class="foot-mono">PILOT · 2026</p>
+      <p class="foot-mono"><a href="#check">Free 10-point check</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ------------------------------------------------------------------
+ * CONFIG — fill these in before deploying (see README.md, 5 minutes).
+ * endpoint: Google Apps Script Web App URL. Empty = form falls back to mailto.
+ * contactEmail: where the fallback mailto goes and where replies come from.
+ * ------------------------------------------------------------------ */
+const CONFIG = {
+  endpoint: "",
+  contactEmail: "",
+  landingName: "inbox-rescue-g1"
+};
+
+(function () {
+  "use strict";
+
+  // ---- UTM / attribution -------------------------------------------------
+  const params = new URLSearchParams(location.search);
+  const attribution = {
+    utm_source: params.get("utm_source") || (document.referrer ? "referral" : "direct"),
+    utm_medium: params.get("utm_medium") || "",
+    utm_campaign: params.get("utm_campaign") || "",
+    utm_content: params.get("utm_content") || "",
+    referrer: document.referrer || "",
+    page: location.pathname
+  };
+
+  // ---- visit counter (unique per browser session) -----------------------
+  function beacons() {
+    try {
+      if (sessionStorage.getItem("ir_visit_sent")) return;
+      sessionStorage.setItem("ir_visit_sent", "1");
+    } catch (e) { /* private mode: count anyway */ }
+    if (!CONFIG.endpoint) return;
+    const q = new URLSearchParams({
+      t: "visit",
+      s: attribution.utm_source,
+      m: attribution.utm_medium,
+      c: attribution.utm_campaign,
+      x: attribution.utm_content,
+      p: CONFIG.landingName
+    });
+    const img = new Image();
+    img.src = CONFIG.endpoint + "?" + q.toString() + "&r=" + Math.random().toString(36).slice(2, 8);
+  }
+
+  // ---- form --------------------------------------------------------------
+  const form = document.getElementById("lead-form");
+  const statusEl = document.getElementById("form-status");
+  const sentEl = document.getElementById("sent");
+  const submitBtn = document.getElementById("submit-btn");
+
+  function setStatus(message, kind) {
+    statusEl.textContent = message;
+    statusEl.className = "form-status " + (kind || "");
+  }
+
+  function normalizeDomain(raw) {
+    return String(raw || "")
+      .trim()
+      .replace(/^https?:\/\//i, "")
+      .replace(/^www\./i, "")
+      .replace(/\/.*$/, "")
+      .toLowerCase();
+  }
+
+  function validDomain(d) {
+    return /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)+$/.test(d);
+  }
+
+  function validEmail(e) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+  }
+
+  function payload(fields) {
+    const q = new URLSearchParams();
+    q.set("t", "lead");
+    q.set("p", CONFIG.landingName);
+    Object.keys(fields).forEach(function (k) {
+      q.set(k, fields[k]);
+    });
+    Object.keys(attribution).forEach(function (k) {
+      q.set(k, attribution[k]);
+    });
+    q.set("ts", new Date().toISOString());
+    return q.toString();
+  }
+
+  function fallbackMailto(fields) {
+    if (!CONFIG.contactEmail) {
+      setStatus("The form isn't accepting submissions yet. Please try again later.", "err");
+      return;
+    }
+    const subject = "Free deliverability check — " + fields.domain;
+    const body = [
+      "Store domain: " + fields.domain,
+      "Prefered reply address: " + fields.email,
+      "What changed: " + fields.symptom,
+      "",
+      "Anything else (optional):",
+      ""
+    ].join("\n");
+    location.href = "mailto:" + CONFIG.contactEmail + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    form.style.display = "none";
+    sentEl.style.display = "block";
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    const domain = normalizeDomain(document.getElementById("domain").value);
+    const email = document.getElementById("email").value.trim();
+    const symptom = document.getElementById("symptom").value;
+
+    if (!validDomain(domain)) {
+      setStatus("That doesn't look like a domain. Try something like yourstore.com.", "err");
+      document.getElementById("domain").focus();
+      return;
+    }
+    if (!validEmail(email)) {
+      setStatus("That email address looks incomplete.", "err");
+      document.getElementById("email").focus();
+      return;
+    }
+
+    const fields = { domain: domain, email: email, symptom: symptom };
+
+    if (!CONFIG.endpoint) {
+      fallbackMailto(fields);
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Sending…";
+    fetch(CONFIG.endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: payload(fields)
+    }).then(function () {
+      form.style.display = "none";
+      sentEl.style.display = "block";
+    }).catch(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Get the free check";
+      setStatus("Something went wrong sending that. Try again, or email us directly.", "err");
+    });
+  });
+
+  beacons();
+})();
+</script>
+</body>
+</html>
