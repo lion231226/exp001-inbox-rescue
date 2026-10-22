@@ -451,7 +451,7 @@
  * contactEmail: where the fallback mailto goes and where replies come from.
  * ------------------------------------------------------------------ */
 const CONFIG = {
-  endpoint: "",
+  endpoint: "https://script.google.com/macros/s/AKfycbxNj3me1R8NCe8Qcw0dYo0wWKIzGv-4ZlCRPGeGFiDtGNHhJoLLy-kL28lsH6d0wVDNwg/exec",
   contactEmail: "",
   landingName: "inbox-rescue-g1"
 };
@@ -477,13 +477,14 @@ const CONFIG = {
       sessionStorage.setItem("ir_visit_sent", "1");
     } catch (e) { /* private mode: count anyway */ }
     if (!CONFIG.endpoint) return;
+    // 注意：参数名不能用 c —— Apps Script /exec 对 c 直接 400（2026-10-22 实测）
     const q = new URLSearchParams({
       t: "visit",
-      s: attribution.utm_source,
-      m: attribution.utm_medium,
-      c: attribution.utm_campaign,
-      x: attribution.utm_content,
-      p: CONFIG.landingName
+      utm_source: attribution.utm_source,
+      utm_medium: attribution.utm_medium,
+      utm_campaign: attribution.utm_campaign,
+      utm_content: attribution.utm_content,
+      lp: CONFIG.landingName
     });
     const img = new Image();
     img.src = CONFIG.endpoint + "?" + q.toString() + "&r=" + Math.random().toString(36).slice(2, 8);
